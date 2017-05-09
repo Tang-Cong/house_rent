@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.1//EN" "http://struts.apache.org/dtds/struts-2.1.dtd">
+<struts>
+	<package name="house_rent" extends="struts-default" namespace="/">
+	<!-- 定义拦截器 -->  
+    <interceptors>  
+        <interceptor name="PrivilegeInterceptor" class="cn.interceptor.PrivilegeInterceptor"></interceptor>
+    </interceptors>
+    	<global-results>
+		    <result name="input">/index.jsp</result>
+    	</global-results>
+    <!-- 登录系统 -->
+    	<action name="login" class="usersAction" method="login">
+    		<result name="usersSuccess" type="redirect">/frame_users.jsp</result>
+    		<result name="manageSuccess" type="redirect">/frame_manage.jsp</result>
+    <!-- 注册 -->
+    	</action>
+    	 <action name="register" class="usersAction" method="register">
+    		<result name="register" type="redirect">/register.jsp</result>
+    	</action>
+    	<action name="save" class="usersAction" method="save">
+    		<result name="success" type="redirect">/index.jsp</result>
+    	</action>
+    	
+    <!-- 用户操作 -->
+		<action name="users_*" class="usersAction" method="{1}">
+			<result name="findAll">/frame/users/listUsers.jsp</result>
+			<result name="editSuccess">/frame/users/editUsers.jsp</result>
+			<result name="updateSuccess" type="redirectAction">users_findAll.action</result>
+			<result name="deleteSuccess" type="redirectAction">users_findAll.action</result>
+			<result name="saveSuccess" type="redirectAction">users_findAll.action</result>
+			<!-- 采用拦截器拦截部分 -->
+			<interceptor-ref name="PrivilegeInterceptor"></interceptor-ref>
+    		<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+    <!-- 出租信息操作 -->
+		<action name="rent_*" class="rentAction" method="{1}">
+			<result name="findAll">/frame/rent/listRent.jsp</result>
+			<result name="saveUI">/frame/rent/addRent.jsp</result>
+			<result name="editSuccess">/frame/rent/editRent.jsp</result>
+			<result name="findById">/frame/rent/findById.jsp</result>
+			<result name="findByName">/frame/rent/findById.jsp</result>
+			<result name="updateSuccess" type="redirectAction">rent_findAll.action</result>
+			<result name="deleteSuccess" type="redirectAction">rent_findAll.action</result>
+			<result name="saveSuccess" type="redirectAction">rent_findAll.action</result>
+			<!-- 采用拦截器拦截部分 -->
+			<interceptor-ref name="PrivilegeInterceptor"></interceptor-ref>
+    		<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+    <!-- 留言板操作 -->
+		<action name="comment_*" class="commentAction" method="{1}">
+			<result name="findAll">/frame/comment/listComment.jsp</result>
+			<result name="saveUI">/frame/comment/addComment.jsp</result>
+			<result name="editSuccess">/frame/comment/editComment.jsp</result>
+			<result name="addDetail">/frame/detail/addDetail.jsp</result>
+			<result name="updateSuccess" type="redirectAction">comment_findAll.action</result>
+			<result name="deleteSuccess" type="redirectAction">comment_findAll.action</result>
+			<result name="saveSuccess" type="redirectAction">comment_findAll.action</result>
+			<!-- 采用拦截器拦截部分 -->
+			<interceptor-ref name="PrivilegeInterceptor"></interceptor-ref>
+    		<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+	<!-- 详细留言操作 -->
+		<action name="detail_*" class="detailAction" method="{1}">
+			<result name="findAll">/frame/detail/listDetail.jsp</result>
+			<result name="saveSuccess" type="redirectAction">comment_findAll.action</result>
+			<!-- 采用拦截器拦截部分 -->
+			<interceptor-ref name="PrivilegeInterceptor"></interceptor-ref>
+    		<interceptor-ref name="defaultStack"></interceptor-ref>
+		</action>
+		</package>
+		<constant name="struts.objectFactory" value="spring" />
+</struts>    

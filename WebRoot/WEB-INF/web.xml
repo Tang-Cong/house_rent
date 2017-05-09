@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+  <display-name>house_rent</display-name>
+  <listener>
+    <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+  </listener>
+  <context-param>
+    <param-name>contextConfigLocation</param-name>
+    <param-value>classpath:applicationContext.xml</param-value>
+  </context-param>
+  <filter>
+    <filter-name>OpenSessionInViewFilter</filter-name>
+    <filter-class>org.springframework.orm.hibernate4.support.OpenSessionInViewFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>OpenSessionInViewFilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- 添加struts2的自带的过滤器 -->
+  <filter>
+    <filter-name>struts2</filter-name>
+    <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareAndExecuteFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>struts2</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  
+  <!-- 使用自定义的过滤器，以jsp结尾的 -->
+  <filter>
+    <filter-name>MyFilter</filter-name>
+    <filter-class>cn.interceptor.MyFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>MyFilter</filter-name>
+    <url-pattern>*.jsp</url-pattern>
+  </filter-mapping>
+  
+    <!-- 过滤器配置信息 -->  
+ <filter>  
+  <filter-name>SetCharacterEncodingFilter</filter-name>  
+  <!-- 过滤器设置编码文件 -->  
+  <filter-class>  
+   filter.SetCharacterEncodingFilter  
+  </filter-class>  
+  <init-param>  
+      <!--  
+       init-param元素定义了过滤器的初始化参数 
+       -->  
+   <description>给参数和值设置名称和编码类型</description>  
+   <param-name>encode</param-name>  
+   <param-value>utf8</param-value>  
+  </init-param>  
+ </filter>  
+ <filter-mapping>  
+  <!--   
+   filter-mapping告诉容器所有与模式向匹配的请求都应该允许通过访问控制过滤器。  
+   所有以.do结尾的访问都先通过过滤器文件过滤   
+  -->  
+  <filter-name>SetCharacterEncodingFilter</filter-name>  
+  <url-pattern>*.jsp</url-pattern>  
+ </filter-mapping> 
+ 
+  <welcome-file-list>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

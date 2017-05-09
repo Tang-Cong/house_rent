@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd" xmlns:tx="http://www.springframework.org/schema/tx">
+
+
+<!-- 配置数据源 -->
+	<bean id="dataSource"
+		class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+		<property name="url" value="jdbc:mysql://localhost:3306"></property>
+		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+		<property name="username" value="root"></property>
+		<property name="password" value="12345"></property>
+		<!-- 连接池启动时的初始值 -->
+        <property name="initialSize" value="10" />
+        <!-- 连接池的最大值 -->
+        <property name="maxActive" value="100" />
+        <!-- 最大空闲值.当经过一个高峰时间后，连接池可以慢慢将已经用不到的连接慢慢释放一部分，一直减少到maxIdle为止 -->
+        <property name="maxIdle" value="50" />
+        <!-- 最小空闲值.当空闲的连接数少于阀值时，连接池就会预申请去一些连接，以免洪峰来时来不及申请 -->
+        <property name="minIdle" value="5" />
+        <!--#给出一条简单的sql语句进行验证-->
+		<property name="testOnBorrow" value="true"></property>
+		<property name="testOnReturn" value="true"></property>
+		<property name="testWhileIdle" value="true"></property>
+		<property name="validationQuery" value="SELECT 1"></property>
+		<property name="timeBetweenEvictionRunsMillis" value="3600000"></property>
+		<property name="minEvictableIdleTimeMillis" value="3600000"></property>        
+	</bean>
+	
+	<!-- 配置会话工厂 -->
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">
+					org.hibernate.dialect.MySQLDialect
+				</prop>	
+				<!-- 显示sql语句 -->
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<!-- 自动更新表 -->
+				<prop key="hibernate.autoReconnect">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">update</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<!-- 配置映射文件 用户，出租表，留言，回复 -->
+			<list>
+				<value>cn/domain/Users.hbm.xml</value>
+				<value>cn/domain/Rent.hbm.xml</value>
+				<value>cn/domain/Comment.hbm.xml</value>
+				<value>cn/domain/Detail.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 配置Action的类 -->
+	<bean id="usersAction" class="cn.action.UsersAction" scope="prototype">
+	<!-- 手动注入Service -->
+		<property name="usersService" ref="usersService"></property>	
+	</bean>
+	<bean id="rentAction" class="cn.action.RentAction" scope="prototype">
+		<property name="rentService" ref="rentService"></property>	
+	</bean>
+	<bean id="commentAction" class="cn.action.CommentAction" scope="prototype">
+		<property name="commentService" ref="commentService"></property>	
+	</bean>
+	<bean id="detailAction" class="cn.action.DetailAction" scope="prototype">
+		<property name="detailService" ref="detailService"></property>	
+	</bean>
+	
+	<!-- 配置业务层的类 -->
+	<bean id="usersService" class="cn.service.impl.UsersServiceImpl">
+		<property name="usersDao" ref="usersDao"></property>
+	</bean>
+	<bean id="rentService" class="cn.service.impl.RentServiceImpl">
+		<property name="rentDao" ref="rentDao"></property>
+	</bean>
+	<bean id="commentService" class="cn.service.impl.CommentServiceImpl">
+		<property name="commentDao" ref="commentDao"></property>
+	</bean>
+	<bean id="detailService" class="cn.service.impl.DetailServiceImpl">
+		<property name="detailDao" ref="detailDao"></property>
+	</bean>
+
+	<!-- 配置DAO的类 -->
+	<bean id="usersDao" class="cn.dao.impl.UsersDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="rentDao" class="cn.dao.impl.RentDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="commentDao" class="cn.dao.impl.CommentDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+	<bean id="detailDao" class="cn.dao.impl.DetailDaoImpl">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+		
+	<!-- 开启事务（使用注解的方式） -->
+		<bean id="transactionManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+		</bean>
+		<!-- 启用注解扫描 -->
+		<tx:annotation-driven transaction-manager="transactionManager" />
+
+</beans>
