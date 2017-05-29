@@ -159,7 +159,7 @@ dao继承HibernateDaoSupport大大简化了hql语句和使业务逻辑与数据�
 			{
 				return list.get(0).intValue();
 			}
-			return 0;s
+			return 0;
 		}
 	
 	}
