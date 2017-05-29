@@ -59,7 +59,7 @@
 
 ### 过滤器
 
-当用户未登录直接访问业务jsp是，进行过滤，要求登录
+当用户未登录直接访问业务jsp时，进行过滤，要求登录
 	
 	   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {  
 	    	Object object=ActionContext.getContext().getSession().get("existUsers");
@@ -74,9 +74,12 @@
 	       }  
 	       chain.doFilter(request, response);  
 	   }  
+预览：
+![](http://i.imgur.com/zclFnU9.gif)
+
 ### 拦截器
 
-当用户输入用户名密码错误时，进行拦截
+当用户输入用户名密码错误时，进行拦截（前端和后端都有验证）
 
 	protected String doIntercept(ActionInvocation actionInvocation) throws Exception {
         //判断session中是否保存了后台用户的信息  
@@ -156,7 +159,7 @@ dao继承HibernateDaoSupport大大简化了hql语句和使业务逻辑与数据�
 			{
 				return list.get(0).intValue();
 			}
-			return 0;
+			return 0;s
 		}
 	
 	}
@@ -165,4 +168,12 @@ dao继承HibernateDaoSupport大大简化了hql语句和使业务逻辑与数据�
 
 使用bootstrap提供的样式，登录界面在输入的时候验证是否输入数据，提高用户体验
 
-**预览地址**：
+**项目源码**：[https://github.com/Tang-Cong/house_rent](https://github.com/Tang-Cong/house_rent)
+
+
+**预览图片**：
+![](http://i.imgur.com/vi3grhV.gif)
+
+![](http://i.imgur.com/0crNiW5.gif)
+
+![](http://i.imgur.com/NdLzL1C.gif)
